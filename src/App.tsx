@@ -57,6 +57,7 @@ export default function App() {
   });
   const [analysis, setAnalysis] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [lastSubmittedInput, setLastSubmittedInput] = useState<Partial<FarmerInput> | null>(null);
 
   const t = translations[lang];
 
@@ -70,9 +71,19 @@ export default function App() {
       .then(setFarmerInputs);
   }, []);
 
+  useEffect(() => {
+    if (lastSubmittedInput && climateHistory.length > 0) {
+      setLoading(true);
+      getPollinationAnalysis(lastSubmittedInput, climateHistory, lang)
+        .then(setAnalysis)
+        .finally(() => setLoading(false));
+    }
+  }, [lang]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setLastSubmittedInput(currentInput);
     try {
       const res = await fetch('/api/farmer-input', {
         method: 'POST',
@@ -183,7 +194,7 @@ export default function App() {
                         value={currentInput.crop_name}
                         onChange={e => setCurrentInput({...currentInput, crop_name: e.target.value})}
                         className="w-full px-4 py-2 rounded-xl border border-stone-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
-                        placeholder="e.g. Cotton, Mango"
+                        placeholder={t.cropPlaceholder}
                       />
                     </div>
                     <div>
@@ -194,7 +205,7 @@ export default function App() {
                         value={currentInput.location_name}
                         onChange={e => setCurrentInput({...currentInput, location_name: e.target.value})}
                         className="w-full px-4 py-2 rounded-xl border border-stone-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
-                        placeholder="District or Village"
+                        placeholder={t.locationPlaceholder}
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
@@ -225,7 +236,7 @@ export default function App() {
                       type="submit"
                       className="w-full py-3 bg-emerald-600 text-white rounded-xl font-bold shadow-lg shadow-emerald-200 hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                     >
-                      {loading ? "Analyzing..." : t.submit}
+                      {loading ? t.analyzing : t.submit}
                       <ChevronRight size={20} />
                     </button>
                   </form>
@@ -235,15 +246,15 @@ export default function App() {
                   <div className="glass-card p-6 bg-emerald-50 border-emerald-100">
                     <h3 className="font-bold text-emerald-900 mb-2 flex items-center gap-2">
                       <CloudSun size={18} />
-                      Why BloomSync?
+                      {t.whyBloomSync}
                     </h3>
                     <p className="text-sm text-emerald-800 leading-relaxed">
-                      Climate change is causing crops to bloom earlier while pollinators remain on their old schedule. This "mismatch" can reduce yields by up to 40%. BloomSync helps you predict and avoid this risk.
+                      {t.whyBloomSyncDesc}
                     </p>
                   </div>
                   
                   <div className="glass-card p-6">
-                    <h3 className="font-bold text-stone-900 mb-4">Recent Submissions</h3>
+                    <h3 className="font-bold text-stone-900 mb-4">{t.recentSubmissions}</h3>
                     <div className="space-y-3">
                       {farmerInputs.slice(0, 3).map((input, i) => (
                         <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-stone-50 border border-stone-100">
@@ -268,15 +279,15 @@ export default function App() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="glass-card p-6 flex flex-col items-center justify-center text-center">
                     <Thermometer className="text-orange-500 mb-2" size={32} />
-                    <p className="text-sm text-stone-500 font-medium">Avg Temp Shift</p>
+                    <p className="text-sm text-stone-500 font-medium">{t.avgTempShift}</p>
                     <p className="text-3xl font-display font-bold text-stone-900">+1.8°C</p>
-                    <p className="text-xs text-stone-400 mt-1">Last 20 Years</p>
+                    <p className="text-xs text-stone-400 mt-1">{t.last20Years}</p>
                   </div>
                   <div className="glass-card p-6 flex flex-col items-center justify-center text-center">
                     <Calendar className="text-blue-500 mb-2" size={32} />
-                    <p className="text-sm text-stone-500 font-medium">Bloom Window Shift</p>
+                    <p className="text-sm text-stone-500 font-medium">{t.bloomWindowShift}</p>
                     <p className="text-3xl font-display font-bold text-stone-900">-12 Days</p>
-                    <p className="text-xs text-stone-400 mt-1">Earlier Bloom</p>
+                    <p className="text-xs text-stone-400 mt-1">{t.earlierBloom}</p>
                   </div>
                   <div className="glass-card p-6 flex flex-col items-center justify-center text-center">
                     <Wind className="text-emerald-500 mb-2" size={32} />
@@ -285,7 +296,7 @@ export default function App() {
                       "text-3xl font-display font-bold",
                       overlapIndex > 70 ? "text-emerald-600" : overlapIndex > 40 ? "text-orange-500" : "text-red-500"
                     )}>{overlapIndex}%</p>
-                    <p className="text-xs text-stone-400 mt-1">Current Season</p>
+                    <p className="text-xs text-stone-400 mt-1">{t.currentSeason}</p>
                   </div>
                 </div>
 
@@ -324,8 +335,8 @@ export default function App() {
                           <Tooltip 
                             contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
                           />
-                          <Line type="monotone" dataKey="peak_bloom_day" stroke="#10b981" strokeWidth={3} dot={{r: 4}} name="Bloom Peak" />
-                          <Line type="monotone" dataKey="pollinator_peak_day" stroke="#3b82f6" strokeWidth={3} dot={{r: 4}} name="Pollinator Peak" />
+                          <Line type="monotone" dataKey="peak_bloom_day" stroke="#10b981" strokeWidth={3} dot={{r: 4}} name={t.bloomPeak} />
+                          <Line type="monotone" dataKey="pollinator_peak_day" stroke="#3b82f6" strokeWidth={3} dot={{r: 4}} name={t.pollinatorPeak} />
                         </LineChart>
                       </ResponsiveContainer>
                     </div>
@@ -340,13 +351,13 @@ export default function App() {
                 {!analysis ? (
                   <div className="glass-card p-12 text-center">
                     <AlertTriangle className="mx-auto text-stone-300 mb-4" size={48} />
-                    <h3 className="text-xl font-bold text-stone-900 mb-2">No Analysis Yet</h3>
-                    <p className="text-stone-500">Please submit your crop data in the Farmer Portal first.</p>
+                    <h3 className="text-xl font-bold text-stone-900 mb-2">{t.noAnalysisYet}</h3>
+                    <p className="text-stone-500">{t.noAnalysisDesc}</p>
                     <button 
                       onClick={() => setActiveTab(0)}
                       className="mt-6 px-6 py-2 bg-emerald-600 text-white rounded-full font-bold"
                     >
-                      Go to Farmer Portal
+                      {t.goToFarmerPortal}
                     </button>
                   </div>
                 ) : (
@@ -446,16 +457,16 @@ export default function App() {
                   </MapContainerAny>
                   
                   <div className="absolute bottom-8 right-8 z-[1000] glass-card p-4 bg-white/90">
-                    <h4 className="text-xs font-bold text-stone-500 uppercase mb-2">Risk Legend</h4>
+                    <h4 className="text-xs font-bold text-stone-500 uppercase mb-2">{t.riskLegend}</h4>
                     <div className="space-y-2">
                       <div className="flex items-center gap-2 text-xs font-medium">
-                        <div className="w-3 h-3 rounded-full bg-red-500" /> High Risk
+                        <div className="w-3 h-3 rounded-full bg-red-500" /> {t.high}
                       </div>
                       <div className="flex items-center gap-2 text-xs font-medium">
-                        <div className="w-3 h-3 rounded-full bg-orange-500" /> Moderate Risk
+                        <div className="w-3 h-3 rounded-full bg-orange-500" /> {t.moderate}
                       </div>
                       <div className="flex items-center gap-2 text-xs font-medium">
-                        <div className="w-3 h-3 rounded-full bg-emerald-500" /> Safe Zone
+                        <div className="w-3 h-3 rounded-full bg-emerald-500" /> {t.safeZone}
                       </div>
                     </div>
                   </div>
@@ -476,7 +487,7 @@ export default function App() {
             <span className="font-display font-bold text-stone-900">BloomSync</span>
           </div>
           <p className="text-sm text-stone-500 max-w-md mx-auto">
-            Empowering farmers with climate-aware intelligence to ensure global food security through protected pollination.
+            {t.footerDesc}
           </p>
           <div className="mt-8 flex items-center justify-center gap-6 text-stone-400">
             <Globe size={20} />

@@ -38,6 +38,13 @@ export async function getPollinationAnalysis(
     return JSON.parse(response.text || "{}");
   } catch (error) {
     console.error("Gemini API error:", error);
+    if (lang === 'te') {
+      return {
+        riskScore: "మధ్యస్థం",
+        explanation: "AI సలహాదారుని కనెక్ట్ చేయడంలో లోపం. చారిత్రక డేటా ఆధారంగా, మధ్యస్థ మార్పు అంచనా వేయబడింది.",
+        recommendations: ["స్థానిక వాతావరణ నమూనాలను పర్యవేక్షించండి", "ముందస్తు విత్తడం గురించి ఆలోచించండి", "స్థానిక వ్యవసాయ నిపుణులను సంప్రదించండి"]
+      };
+    }
     return {
       riskScore: "Moderate",
       explanation: "Error connecting to AI advisor. Based on historical data, a moderate shift is expected.",

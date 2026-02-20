@@ -40,4 +40,23 @@ export interface Translation {
   moderate: string;
   high: string;
   languageToggle: string;
+  cropPlaceholder: string;
+  locationPlaceholder: string;
+  analyzing: string;
+  whyBloomSync: string;
+  whyBloomSyncDesc: string;
+  recentSubmissions: string;
+  avgTempShift: string;
+  bloomWindowShift: string;
+  last20Years: string;
+  earlierBloom: string;
+  currentSeason: string;
+  bloomPeak: string;
+  pollinatorPeak: string;
+  noAnalysisYet: string;
+  noAnalysisDesc: string;
+  goToFarmerPortal: string;
+  riskLegend: string;
+  safeZone: string;
+  footerDesc: string;
 }
