@@ -1,0 +1,50 @@
+import { Translation } from "./types";
+
+export const translations: Record<'en' | 'te', Translation> = {
+  en: {
+    title: "BloomSync",
+    farmerPortal: "Farmer Input",
+    analysisPortal: "Climate & Bloom Analysis",
+    riskPortal: "Risk & Recommendations",
+    mapPortal: "Risk Map",
+    cropName: "Crop Name",
+    location: "Location (District/GPS)",
+    sowingDate: "Sowing Date",
+    cropCategory: "Crop Category",
+    submit: "Submit Data",
+    pollinatorDependent: "Pollinator Dependent",
+    selfPollinating: "Self Pollinating",
+    tempTrend: "Temperature Trend (20 Years)",
+    bloomShift: "Bloom vs Pollinator Window",
+    overlapIndex: "Pollination Overlap Index",
+    riskScore: "Pollination Risk Score",
+    recommendations: "AI Advisory",
+    low: "Low",
+    moderate: "Moderate",
+    high: "High",
+    languageToggle: "తెలుగు"
+  },
+  te: {
+    title: "బ్లూమ్ సింక్",
+    farmerPortal: "రైతు సమాచారం",
+    analysisPortal: "వాతావరణం & పూత విశ్లేషణ",
+    riskPortal: "ప్రమాదం & సిఫార్సులు",
+    mapPortal: "ప్రమాద పటం",
+    cropName: "పంట పేరు",
+    location: "ప్రాంతం (జిల్లా/GPS)",
+    sowingDate: "విత్తే తేదీ",
+    cropCategory: "పంట రకం",
+    submit: "సమర్పించు",
+    pollinatorDependent: "పరాగసంపర్కంపై ఆధారపడేది",
+    selfPollinating: "స్వయం పరాగసంపర్కం",
+    tempTrend: "ఉష్ణోగ్రత ధోరణి (20 ఏళ్లు)",
+    bloomShift: "పూత మరియు పరాగసంపర్క సమయం",
+    overlapIndex: "పరాగసంపర్క అతివ్యాప్తి సూచిక",
+    riskScore: "పరాగసంపర్క ప్రమాద స్కోరు",
+    recommendations: "AI సలహా",
+    low: "తక్కువ",
+    moderate: "మధ్యస్థం",
+    high: "ఎక్కువ",
+    languageToggle: "English"
+  }
+};

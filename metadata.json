@@ -1,0 +1,5 @@
+{
+  "name": "BloomSync",
+  "description": "Climate-Aware Pollination Risk & Crop Advisory System for farmers to predict bloom shifts and pollination mismatches.",
+  "requestFramePermissions": ["geolocation"]
+}
